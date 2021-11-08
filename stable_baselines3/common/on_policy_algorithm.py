@@ -57,6 +57,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         n_steps: int,
         gamma: float,
         gae_lambda: float,
+        use_n_step_advantage: bool,
         ent_coef: float,
         vf_coef: float,
         max_grad_norm: float,
@@ -94,6 +95,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         self.n_steps = n_steps
         self.gamma = gamma
         self.gae_lambda = gae_lambda
+        self.use_n_step_advantage = use_n_step_advantage
         self.ent_coef = ent_coef
         self.vf_coef = vf_coef
         self.max_grad_norm = max_grad_norm
