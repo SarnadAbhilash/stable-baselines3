@@ -117,6 +117,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
             self.device,
             gamma=self.gamma,
             gae_lambda=self.gae_lambda,
+            use_n_step_advantage=self.use_n_step_advantage,
             n_envs=self.n_envs,
         )
         self.policy = self.policy_class(  # pytype:disable=not-instantiable
@@ -227,7 +228,6 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         reset_num_timesteps: bool = True,
     ) -> "OnPolicyAlgorithm":
         iteration = 0
-
         total_timesteps, callback = self._setup_learn(
             total_timesteps, eval_env, callback, eval_freq, n_eval_episodes, eval_log_path, reset_num_timesteps, tb_log_name
         )
@@ -246,7 +246,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             # Display training infos
             if log_interval is not None and iteration % log_interval == 0:
-                fps = int((self.num_timesteps - self._num_timesteps_at_start) / (time.time() - self.start_time))
+                fps = int(self.num_timesteps / (time.time() - self.start_time))
                 self.logger.record("time/iterations", iteration, exclude="tensorboard")
                 if len(self.ep_info_buffer) > 0 and len(self.ep_info_buffer[0]) > 0:
                     self.logger.record("rollout/ep_rew_mean", safe_mean([ep_info["r"] for ep_info in self.ep_info_buffer]))
@@ -257,6 +257,15 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 self.logger.dump(step=self.num_timesteps)
 
             self.train()
+
+        if self.use_n_step_advantage:
+            self.logger.log("========================================================")
+            self.logger.log("Abhilash HW 1.3 AIPI530 - using nstep returns & advantage")
+            self.logger.log("========================================================")
+        else:
+            self.logger.log("========================================================")
+            self.logger.log("Abhilash HW 1.3 AIPI530 - using vanilla returns & advantage")
+            self.logger.log("========================================================")
 
         callback.on_training_end()
 
